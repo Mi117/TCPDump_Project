@@ -10,6 +10,82 @@ A personal cybersecurity project that builds a **network logging tool** on top o
 
 > tcpdump does **not** decrypt encrypted traffic by itself — companion tooling (browser `SSLKEYLOGFILE` + Wireshark TLS pre-master secret log) is used for decryption.
 
+## Features
+
+- Unified logging CLI — `src/logger.sh` (interface, filter, output, count, rotation, SSL keys)
+- Interface selection and BPF filters (`host`, `port`, `src`, `dst`, ...)
+- Output files with time-based (`-G`) and size-based (`-C`) rotation
+- TLS key capture via `SSLKEYLOGFILE` for Wireshark decryption
+- Ready-made task scripts (SSH proof capture, SSL key extraction, watchdog)
+- Documentation, architecture notes and a visual walkthrough
+- CI linting with shellcheck
+
+## Repository Structure
+
+```text
+TCPDump_Project/
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
+├── ROADMAP.md
+├── .gitignore
+├── .github/workflows/shellcheck.yml
+├── src/
+│   └── logger.sh
+├── scripts/
+│   ├── checkspy.sh
+│   ├── key_extraction.sh
+│   └── watchdog.sh
+├── config/
+│   └── logger.conf.example
+├── tests/
+│   └── test_scripts.sh
+├── docs/
+│   ├── ARCHITECTURE.md
+│   ├── USAGE.md
+│   ├── TCP Dump_Tasks breakdown.pdf
+│   └── TCPDump Quick Reference.pdf
+└── screenshots/
+```
+
+## Quick Start
+
+```bash
+git clone https://github.com/Mi117/TCPDump_Project.git
+cd TCPDump_Project
+chmod +x src/logger.sh scripts/*.sh
+
+sudo apt install -y tcpdump
+./src/logger.sh --help
+```
+
+### Unified logging tool
+
+```bash
+# Capture everything -> capture.pcap (600 s / 2 MB rotation)
+./src/logger.sh
+
+# SSH traffic only
+./src/logger.sh -f "port 22" -o proof.pcap
+
+# HTTPS on a specific interface
+./src/logger.sh -i eth0 -f "port 443" -o https.pcap
+
+# Watchdog: 10 packets to a host, rotate 15 s / 1 MB
+./src/logger.sh -c 10 -f "host 10.0.2.15" -t 15 -s 1 -o capture.pcap
+
+# TLS key capture
+./src/logger.sh -k /home/kali/tcpdump_project/sslkeys.log -f "host example.com"
+```
+
+### Task scripts
+
+```bash
+sudo ./scripts/checkspy.sh        # SSH capture -> proof.pcap
+sudo ./scripts/key_extraction.sh  # SSL keys + capture -> capture.pcap
+sudo ./scripts/watchdog.sh        # 10 packets -> capture.pcap
+```
+
 ## What does this tool do?
 
 This project implements the objectives of the "Build a Logging Tool" coursework:
@@ -19,47 +95,6 @@ This project implements the objectives of the "Build a Logging Tool" coursework:
 3. **Task 3 – Save and Read:** write captures with `-w abc.pcap`, read with `-r abc.pcap`; use Wireshark to analyze.
 4. **Task 4 – Sequential Dumps:** rotate dump files by time (`-G n`) and size (`-C n`).
 5. **Task 5 – SSL Keys + Wireshark:** set `SSLKEYLOGFILE` and point Wireshark at the TLS pre-master secret log to decode encrypted traffic.
-
-## Repository Structure
-
-```text
-TCPDump_Project/
-├── README.md
-├── screenshots/
-├── scripts/
-└── docs/
-```
-
-## The Scripts
-
-### scripts/checkspy.sh
-
-```bash
-#!/bin/bash
-sudo tcpdump port 22 -i any -G 600 -C 2 -w proof.pcap
-```
-
-Captures SSH traffic (`port 22`), writes to `proof.pcap`, rotating every 600 s / 2 MB.
-
-### scripts/key_extraction.sh
-
-```bash
-#!/bin/bash
-export SSLKEYLOGFILE=/home/kali/tcpdump_project/sslkeys.log
-/usr/bin/google-chrome-stable &
-sudo tcpdump host apd.nasa.gov -w capture.pcap -G 600 -C 1
-```
-
-Extracts SSL/TLS keys via `SSLKEYLOGFILE`, launches Chrome, captures traffic to `apd.nasa.gov`.
-
-### scripts/watchdog.sh
-
-```bash
-#!/bin/bash
-sudo tcpdump -c 10 host 10.0.2.15 -C 1 -G 15 -w capture.pcap
-```
-
-Watchdog capture — first 10 packets to host `10.0.2.15`, rotating 15 s / 1 MB.
 
 ## Walkthrough — Visual Proof of the Work
 
@@ -101,17 +136,23 @@ Rotating dumps with `-C` and `-G`.
 
 ![Kali Linux running in Oracle VirtualBox](screenshots/2025-06-17%2015_03_47-kali-linux-2025.1c-virtualbox-amd64%20[Running]%20-%20Oracle%20VirtualBox.png)
 
-## Instructions / Usage
+## Documentation
 
-- Install: `sudo apt install tcpdump`
-- Run: `sudo tcpdump [options] [expression]`
-- Analyze with Wireshark; set TLS pre-master secret log for decryption.
-- Use scripts in `scripts/`.
+- [`docs/USAGE.md`](docs/USAGE.md) — detailed usage
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — repo architecture
+- [`ROADMAP.md`](ROADMAP.md) — planned features
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — how to contribute
 
 ## Roadmap
 
-- Continue adding features to the logging tool.
-- Add a user-facing interface for people to use on their machines.
+- [ ] Filter presets and reports
+- [ ] Interactive CLI (TUI) and web dashboard
+- [ ] Installer / packaging
+- [ ] CI checks
+
+## License
+
+MIT — see [`LICENSE`](LICENSE).
 
 ---
 

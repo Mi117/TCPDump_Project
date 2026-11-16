@@ -1,0 +1,16 @@
+# Normalize line endings across platforms.
+# Shell scripts and CI configs must stay LF so shebangs work on Linux.
+* text=auto
+
+*.sh        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.conf      text eol=lf
+*.example   text eol=lf
+*.md        text eol=lf
+
+# Binary assets
+*.png       binary
+*.jpg       binary
+*.pdf       binary
+*.pcap      binary

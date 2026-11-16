@@ -1,0 +1,14 @@
+# Capture outputs
+*.pcap
+*.pcap.*
+*.cap
+sslkeys.log
+captures/
+output/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,14 @@
+# TCPDump_Project - logger configuration example
+#
+# Copy to logger.conf and adjust for your environment.
+# (Currently used as documentation / future config-file support.)
+
+INTERFACE=any
+FILTER="port 22"
+OUTPUT=proof.pcap
+ROTATE_TIME=600
+ROTATE_SIZE=2
+COUNT=0
+
+# Path used for TLS key extraction (SSLKEYLOGFILE)
+SSL_KEYS=/home/kali/tcpdump_project/sslkeys.log
