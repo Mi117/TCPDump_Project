@@ -32,6 +32,7 @@ TCPDump_Project/
 │   ├── TCP Dump_Tasks breakdown.pdf
 │   └── TCPDump Quick Reference.pdf
 └── screenshots/               # visual proof of the lab work
+    └── README.md              # index of all walkthrough images
 ```
 
 ## Components

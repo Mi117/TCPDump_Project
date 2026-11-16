@@ -8,6 +8,7 @@
 - [x] Documentation (`docs/USAGE.md`, `docs/ARCHITECTURE.md`)
 - [x] Visual walkthrough (screenshots)
 - [x] Initial repository setup
+- [x] CI: shellcheck lint + script tests on every push
 
 ## Next
 
@@ -16,7 +17,6 @@
 - [ ] Interactive CLI menu (TUI)
 - [ ] Web dashboard interface to manage captures
 - [ ] Install / packaging script (single-command setup)
-- [ ] CI: shellcheck lint + script tests on every push
 
 ## Ideas
 
