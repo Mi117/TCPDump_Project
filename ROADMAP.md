@@ -10,12 +10,21 @@
 - [x] Initial repository setup
 - [x] CI: shellcheck lint + script tests on every push
 
-## Next
+## Next — upcoming iterations (next months)
 
-- [ ] Add filter presets (SSH, HTTP/HTTPS, DNS, custom sets)
+### Iteration 1 — Usability
+- [ ] Add filter presets (SSH, HTTP/HTTPS, DNS, custom sets) to `src/logger.sh`
+
+### Iteration 2 — Observability
 - [ ] Live capture statistics / summary reports
+
+### Iteration 3 — UX
 - [ ] Interactive CLI menu (TUI)
+
+### Iteration 4 — Platform
 - [ ] Web dashboard interface to manage captures
+
+### Iteration 5 — Operations
 - [ ] Install / packaging script (single-command setup)
 
 ## Ideas
